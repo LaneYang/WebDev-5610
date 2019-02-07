@@ -3,9 +3,11 @@ body {
     padding-bottom: 0px;
 }
 input.form-control {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
-
+h1{
+    margin-top:20px;
+}
 .cl-form-bottom-padding{
     margin-bottom: 2em;
 }
@@ -88,12 +90,6 @@ a:hover{
     padding-right: 0px;
 }
 
-.cl-list-item-borderless {
-    border-top: 0 none;
-    border-bottom: 0 none;
-    border-left: 0 none;
-    border-right: 0 none;
-}
 
 .cl-widget-images{
     display: inline;
@@ -114,4 +110,16 @@ a:hover{
 }
 .navblack{
     color: black;
+}
+form{
+    margin-bottom: 2rem;
+}
+
+
+html {
+    font-size: 14px;
+}
+
+*{
+    box-sizing: border-box;
 }
