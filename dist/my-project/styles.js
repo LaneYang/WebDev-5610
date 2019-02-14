@@ -557,7 +557,7 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/lane/cs5610/WebProject/my-project/src/styles.css */"./src/styles.css");
+module.exports = __webpack_require__(/*! /Users/lane/cs5610/WebProject/src/styles.css */"./src/styles.css");
 
 
 /***/ })
