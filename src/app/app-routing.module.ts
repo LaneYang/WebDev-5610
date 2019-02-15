@@ -4,14 +4,15 @@ import {LoginComponent} from './views/user/login/login.component';
 import {ProfileComponent} from './views/user/profile/profile.component';
 import {RegisterComponent} from './views/user/register/register.component';
 
-
 const routes: Routes = [
-    {path: 'login', component: LoginComponent},
-    {path: 'profile', component: ProfileComponent},
-    {path: 'register', component: RegisterComponent}];
+  {path: 'login' , component :  LoginComponent},
+  {path: 'profile' ,  component: ProfileComponent} ,
+  {path : 'register' , component: RegisterComponent} ,
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+
