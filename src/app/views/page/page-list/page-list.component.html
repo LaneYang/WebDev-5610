@@ -1,39 +1,44 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-start mb-3 ">
-  <a class="nav-item nav-link navblack" href="website-list.html"><i class="fas fa-chevron-left"></i></a>
-  <a class="navbar-brand  " href="#">Pages</a>
-  <!--ml-auto pushes the plus icon all the way to the right
-  todo:justify-content-end and float-right not working for some reason-->
-  <a class="nav-item nav-link ml-auto" href="page-new.html"><i class=" navblack fas fa-plus"></i></a>
+
+<nav class="navbar navbar-light bg-light fixed-top">
+  <div class="container-fluid row">
+
+    <div class="float-left">
+      <a routerLink="/user/{{userId}}/website/{{websiteId}}/page" class="cl-text-black cl-icon-padding">
+          <span class="fas fa-chevron-left">
+          </span>
+      </a>
+      <a class="navbar-brand cl-text-white cl-text-bold" href="#">
+        Pages
+      </a>
+    </div>
+    <div class="navbar-text float-right">
+      <a routerLink="/user/{{userId}}/website/{{websiteId}}/page/new" class="cl-icon-padding cl-text-black">
+          <span class="fas fa-plus">
+          </span>
+      </a>
+    </div>
+
+  </div>
 </nav>
 
-<div class="container-fluid pt-5">
-  <ul class="list-group border-0">
-    <li class="list-group-item border-0 ">
-      <a href="page-edit.html"><span><i class="fas fa-cog float-right"></i></span></a>
-      <a href="widget-list.html">Blog Post</a>
+
+<div class="container-fluid cl-container-padding">
+  <ul class="list-group cl-list-group-borderless">
+    <li class="list-group-item cl-list-item-borderless" *ngFor="let page of pages">
+
+      <a routerLink="/user/{{userId}}/website/{{websiteId}}/page/{{page._id}}"><span class="fas fa-cog float-right"></span></a>
+      <a routerLink="/user/{{userId}}/website/{{websiteId}}/page/{{page._id}}/widget">{{page.name}}</a>
     </li>
-    <li class="list-group-item border-0">
-      <a href="page-edit.html"><span><i class="fas fa-cog float-right"></i></span></a>
-      <a href="widget-list.html">Blogs</a>
-    </li>
-    <li class="list-group-item border-0">
-      <a href="page-edit.html"><span><i class="fas fa-cog float-right"></i></span></a>
-      <a href="widget-list.html">Homes</a>
-    </li>
-    <li class="list-group-item border-0">
-      <a href="page-edit.html"><span><i class="fas fa-cog float-right"></i></span></a>
-      <a href="widget-list.html">About</a>
-    </li>
-    <li class="list-group-item border-0">
-      <a href="page-edit.html"><span><i class="fas fa-cog float-right"></i></span></a>
-      <a href="widget-list.html">Contact Us</a>
-    </li>
+
   </ul>
 </div>
 
-<nav class="navbar navbar-expand-lg navbar-primary bg-light justify-content-start fixed-bottom">
-
-  <a class="nav-item nav-link ml-auto navblack" href="profile.html"><i class="  fas fa-user"></i></a>
-</nav><p>
-  page-list works!
-</p>
+<nav class="navbar navbar-light bg-light fixed-bottom">
+  <div class="container-fluid row">
+    <div class="float-right">
+      <a routerLink="/user/{{userId}}" class="cl-icon-padding">
+        <span class="fas fa-user"></span>
+      </a>
+    </div>
+  </div>
+</nav>
