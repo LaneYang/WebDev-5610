@@ -47,6 +47,7 @@ import {FlickrService} from './services/flickr.service.client';
     WidgetHeaderComponent,
     WidgetImageComponent,
     WidgetYoutubeComponent,
+
     WebsiteFooterComponent,
     PageFooterComponent,
     SortableDirective,

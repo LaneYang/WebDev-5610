@@ -54,34 +54,5 @@ export class WidgetService {
         return this._http.post(this.baseUrl + '/api/uploads', info);
     }
 
-    // createWidget(pageId: string, widget: Widget): Observable<Widget[]> {
-    //     return this._http.post<Widget[]>(this.baseUrl + '/api/page/' + pageId + '/widget', JSON.stringify(widget)).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // findWidgetsByPageId(pageId: string): Observable<Widget[]> {
-    //     return this._http.get<Widget[]>(this.baseUrl + '/api/page/' + pageId + '/widget').pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // findWidgetById(widgetId: string): Observable<Widget> {
-    //     return this._http.get<Widget>(this.baseUrl + '/api/widget/' + widgetId).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // updateWidget(widgetId: string, widget: Widget): Observable<Widget[]>  {
-    //     return this._http.put<Widget[]>(this.baseUrl + '/api/widget/' + widgetId, JSON.stringify(widget)).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // deleteWidget(widgetId: string): Observable<Widget>  {
-    //     return this._http.delete<Widget>(this.baseUrl + '/api/widget/' + widgetId).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    //
-    // }
+
 }

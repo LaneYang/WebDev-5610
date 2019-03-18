@@ -39,17 +39,12 @@ module.exports = function (app) {
         }
 
 
-        // var originalname  = myFile.originalname; // file name on user's computer
-        var filename      = myFile.filename;     // new file name in uploads folder
-        // var path          = myFile.path;         // full path of uploaded file
-        // var destination   = myFile.destination;  // folder where file is saved to
-        // var size          = myFile.size;
-        // var mimetype      = myFile.mimetype;
+
+        var filename      = myFile.filename;
 
         var widget = {url: 'file://' + __dirname + '/../../src/assets/uploads/' + filename}
         for (var i = 0; i < widgets.length; i++) {
             if (widgets[i].widgetId === widgetId) {
-                // Not allowed to load local resource:
                 widgets[i].url = 'assets/uploads/' + filename;
                 res.status(200).send({message: 'File uploaded', url: ''});
                 return;

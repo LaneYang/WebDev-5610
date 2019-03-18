@@ -47,35 +47,5 @@ export class WebsiteService {
     deleteWebsite(websiteId: string) {
         return this._http.delete(this.baseUrl + '/api/website/' + websiteId);
     }
-    //
-    // createWebsite(userId: string, website: Website): Observable<Website[]> {
-    //     return this._http.post<Website[]>(this.baseUrl + '/api/user/' + userId + '/website', JSON.stringify(website)).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // findWebsiteByUser(userId: string): Observable<Website[]> {
-    //     return this._http.get<Website[]>(this.baseUrl + '/api/user/' + userId + '/website').pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // findWebsiteById(websiteId: string): Observable<Website>  {
-    //     return this._http.get<Website>(this.baseUrl + '/api/website/' + websiteId).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // updateWebsite(websiteId: string, website: Website): Observable<Website[]>{
-    //     return this._http.put<Website[]>(this.baseUrl + '/api/website/' + websiteId, JSON.stringify(website)).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    //
-    // }
-    //
-    // deleteWebsite(websiteId: string): Observable<Website[]>{
-    //     return this._http.delete<Website[]>(this.baseUrl + '/api/website/' + websiteId).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
+
 }

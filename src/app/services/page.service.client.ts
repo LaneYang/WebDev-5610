@@ -43,33 +43,5 @@ export class PageService {
     deletePage(pageId: string) {
         return this._http.delete(this.baseUrl + '/api/page/' + pageId);
     }
-    // createPage(websiteId: string, page: Page): Observable<Page[]> {
-    //     return this._http.post<Page[]>(this.baseUrl + '/api/website/' + websiteId + '/page', JSON.stringify(page)).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // findPageByWebsiteId(websiteId: string): Observable<Page[]> {
-    //     return this._http.get<Page[]>(this.baseUrl + '/api/website/' + websiteId + '/page').pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // findPageById(pageId: string): Observable<Page> {
-    //     return this._http.get<Page>(this.baseUrl + '/api/page/' + pageId).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // updatePage(pageId: string, page: Page): Observable<Page[]> {
-    //     return this._http.put<Page[]>(this.baseUrl + '/api/page/' + pageId, JSON.stringify(page)).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
-    //
-    // deletePage(pageId: string) {
-    //     return this._http.delete<Page>(this.baseUrl + '/api/page/' + pageId).pipe(
-    //         catchError((error: any) => Observable.throw(error))
-    //     );
-    // }
+
 }

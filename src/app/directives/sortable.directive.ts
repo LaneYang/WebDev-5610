@@ -8,14 +8,14 @@ declare var jQuery: any;
 
 export class SortableDirective implements AfterViewInit {
 
-    @Output() newIndexes = new EventEmitter(); // this will emit an event for the parent component or the directive calling component
+    @Output() newIndexes = new EventEmitter();
 
     initialIndex: any;
 
     constructor(private el: ElementRef) {
     }
 
-    // Lifecycle hook that is called after a component's view has been fully initialized
+
     ngAfterViewInit() {
         this.appSortable(this);
     }

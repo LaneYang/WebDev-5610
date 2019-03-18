@@ -4,7 +4,6 @@ import {ProfileComponent} from './views/user/profile/profile.component';
 import {RegisterComponent} from './views/user/register/register.component';
 import {WebsiteListComponent} from './views/website/website-list/website-list.component';
 import {PageListComponent} from './views/page/page-list/page-list.component';
-
 import {WebsiteNewComponent} from './views/website/website-new/website-new.component';
 import {WebsiteEditComponent} from './views/website/website-edit/website-edit.component';
 import {PageNewComponent} from './views/page/page-new/page-new.component';

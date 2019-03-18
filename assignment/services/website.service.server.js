@@ -1,9 +1,9 @@
 module.exports = function (app) {
     var websites = [
-        {websiteId: '123', name: 'lorem', developerId: '123', description: 'ipsum'},
-        {websiteId: '234', name: 'lorem2', developerId: '123',description: 'ipsum1'},
-        {websiteId: '345', name: 'lorem3', developerId: '123', description: 'ipsum2'},
-        {websiteId: '456', name: 'lorem4', developerId: '123', description: 'ipsum3'}
+        {websiteId: '123', name: 'lorem', developerId: '123', description: 'lorem'},
+        {websiteId: '234', name: 'lorem', developerId: '234',description: 'lorem'},
+        {websiteId: '345', name: 'lorem', developerId: '345', description: 'lorem'},
+        {websiteId: '456', name: 'lorem', developerId: '456', description: 'lorem'}
     ];
     app.post('/api/user/:uid/website', createWebsite);
     app.get('/api/user/:uid/website', findAllWebsitesForUser);

@@ -18,7 +18,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-const port = process.env.PORT || '8888';
+const port = process.env.PORT || '3200';
 app.set('port', port);
 
 require('./assignment/app')(app);

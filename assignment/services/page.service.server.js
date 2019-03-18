@@ -1,9 +1,9 @@
 module.exports = function (app) {
     var pages = [
-        {pageId: '1111', name: 'ipsum', websiteId: '123', description: 'Lorem'},
-        {pageId: '2222', name: 'ipsum2', websiteId: '123', description: 'Lorem'},
-        {pageId: '3333', name: 'ipsum3', websiteId: '123', description: 'Lorem'},
-        {pageId: '4444', name: 'ipsum4', websiteId: '123', description: 'Lorem'}
+        {pageId: '111', name: 'lorem', websiteId: '123', description: 'Lorem'},
+        {pageId: '222', name: 'lorem', websiteId: '123', description: 'Lorem'},
+        {pageId: '333', name: 'lorem', websiteId: '123', description: 'Lorem'},
+        {pageId: '444', name: 'lorem', websiteId: '123', description: 'Lorem'}
     ];
 
     app.post('/api/website/:websiteId/page', createPage);
