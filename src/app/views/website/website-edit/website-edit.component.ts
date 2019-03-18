@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Router} from '@angular/router';
-import {WebsiteService} from '../../../services/website.service.client';
+import { Component, OnInit } from '@angular/core';
+import {User} from '../../../models/user.model.client';
 import {Website} from '../../../models/website.model.client';
-
+import {WebsiteService} from '../../../services/website.service.client';
+import {UserService} from '../../../services/user.service.client';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-website-edit',
@@ -11,40 +11,53 @@ import {Website} from '../../../models/website.model.client';
   styleUrls: ['./website-edit.component.css']
 })
 export class WebsiteEditComponent implements OnInit {
-  website: Website;
-  userId: String;
-  websites: [{}];
-  constructor(private websiteService: WebsiteService, private router: Router, private activatedRouter: ActivatedRoute) {
-    this.website = new Website('123', 'Facebook', '456', 'Lorem');
+
+  user: User = new User('', '', '', '', '', '');
+  websites: Website[];
+  currWebsite: Website = new Website('', '', '', '');
+
+  constructor(private webService: WebsiteService, private userService: UserService,
+              private route: ActivatedRoute, private router: Router) {}
+
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.userService.findUserById(params['uid']).subscribe(
+          (user: User) => {
+            this.user = user;
+          }
+      );
+      this.webService.findWebsiteByUser(params['uid']).subscribe(
+          (websites: Website[]) => {
+            this.websites = websites;
+          }
+      );
+      this.webService.findWebsiteById(params['websiteId']).subscribe(
+          (website: Website) => {
+            this.currWebsite = website;
+          }
+      );
+    });
   }
 
   updateWebsite() {
-    this.websiteService.updateWebsite(this.website._id, this.website).subscribe();
+    if (this.currWebsite.name && this.currWebsite.description) {
+      this.webService.updateWebsite(this.currWebsite.websiteId,
+          new Website(this.currWebsite.websiteId, this.currWebsite.name, this.user.uid, this.currWebsite.description)).subscribe(
+          (data: any) => {
+            this.router.navigate(['/profile/' + this.user.uid + '/website']);
+          }
+      );
+    } else {
+      alert('Please enter name and description!');
+    }
   }
 
   deleteWebsite() {
-    this.websiteService.deleteWebsite(this.website._id).subscribe(website => {
-      this.router.navigateByUrl('/user/' + this.userId + '/website');
-    });
-  }
-
-  ngOnInit() {
-    this.activatedRouter.params.subscribe(params => {
-      this.website._id = params['wid'];
-      this.userId = params['uid'];
-      console.log('website id: ' + this.website._id);
-    });
-    this.websiteService.findWebsiteById(this.website._id)
-      .subscribe(data => {
-        console.log('in website-edit comp...');
-        console.log(data);
-        this.website = data;
-      });
-    this.websiteService.findWebsitesByUser(this.userId)
-      .subscribe(data => {
-        console.log(data);
-        this.websites = data;
-      });
+    this.webService.deleteWebsite(this.currWebsite.websiteId).subscribe(
+        (data: any) => {
+            this.router.navigate(['/profile/' + this.user.uid + '/website']);
+        }
+    );
   }
 
 }

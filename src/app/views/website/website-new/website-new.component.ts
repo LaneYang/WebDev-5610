@@ -1,7 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
+import {User} from '../../../models/user.model.client';
+import {Website} from '../../../models/website.model.client';
 import {WebsiteService} from '../../../services/website.service.client';
+import {UserService} from '../../../services/user.service.client';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgForm} from '@angular/forms';
+
 
 @Component({
   selector: 'app-website-new',
@@ -9,34 +12,41 @@ import {NgForm} from '@angular/forms';
   styleUrls: ['./website-new.component.css']
 })
 export class WebsiteNewComponent implements OnInit {
-  userId: String;
-  websites: [{}];
 
-  @ViewChild('f') loginForm: NgForm;
+  user: User = new User('', '', '', '', '', '');
+  websites: Website[];
+  newWebsite: Website;
 
-  constructor(private websiteService: WebsiteService, private router: Router, private activatedRoute: ActivatedRoute) {
-  }
-
-  createWebsite() {
-    const name = this.loginForm.value.name;
-    const description = this.loginForm.value.description;
-    const website = {name: name, description: description};
-    this.websiteService.createWebsite(this.userId, website).subscribe(web => {
-      this.router.navigateByUrl('/user/' + this.userId + '/website');
-    });
-  }
+  constructor(private webService: WebsiteService, private userService: UserService,
+              private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe((params: any) => {
-      this.userId = params['uid'];
-
+    this.route.params.subscribe(params => {
+      this.userService.findUserById(params['uid']).subscribe(
+          (user: User) => {
+            this.user = user;
+          }
+      );
+      this.webService.findWebsiteByUser(params['uid']).subscribe(
+          (websites: Website[]) => {
+            this.websites = websites;
+          }
+      );
+      this.newWebsite = new Website('', '', this.user.uid, '');
     });
-    this.websiteService.findWebsitesByUser(this.userId)
-      .subscribe(data => {
-        console.log('in website-new comp...');
-        console.log(data);
-        this.websites = data;
-      });
+  }
+
+  newWeb() {
+    if (this.newWebsite.name && this.newWebsite.description) {
+      this.webService.createWebsite(this.user.uid, this.newWebsite).subscribe(
+          (data: any) => {
+            this.router.navigate(['/profile/' + this.user.uid + '/website']);
+          }
+      );
+    } else {
+      alert('Please enter name and description!');
+    }
+
   }
 
 }

@@ -1,9 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {UserService} from '../../../services/user.service.client';
-import {User} from '../../../models/user.model.client';
-import {Router} from '@angular/router';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {ViewChild} from '@angular/core';
+import {UserService} from '../../../services/user.service.client';
+import {Router} from '@angular/router';
+import {User} from '../../../models/user.model.client';
 
 @Component({
   selector: 'app-register',
@@ -12,27 +11,41 @@ import {ViewChild} from '@angular/core';
 })
 export class RegisterComponent implements OnInit {
 
-  @ViewChild('f') loginForm: NgForm;
+  @ViewChild('f') registerForm: NgForm;
+  username: string;
+  password: string;
+  v_password: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  errorFlag: boolean;
+  errorMsg = 'Password mis-matching !';
 
-  user;
-
-
-  constructor(private userService: UserService, private router: Router) {
-
-  }
+  constructor(private userService: UserService, private router: Router) {  this.errorFlag = false; }
 
   register() {
-    const username = this.loginForm.value.username;
-    const password = this.loginForm.value.password;
+    this.username = this.registerForm.value.username;
+    this.password = this.registerForm.value.password;
+    this.v_password = this.registerForm.value.v_password;
+    this.firstName = this.registerForm.value.firstName;
+    this.lastName = this.registerForm.value.lastName;
+    this.email = this.registerForm.value.email;
 
-    this.user = {username: username, password: password};
+    if (this.v_password === this.password) {
+      const user: User = new User(Math.random() + '', this.username, this.password, this.firstName, this.lastName, this.email);
 
-    this.userService.createUser(this.user)
-      .subscribe((user: User) => {
-        if (user) {
-          this.router.navigate(['/user', user._id]);
-        }
-      });
+      this.userService.createUser(user).subscribe(
+          (data: any) => {
+            if (data.message === 'User is already exist!') {
+              alert('User is already exist! Please use a new username!');
+            } else {
+              this.router.navigate(['/profile/' + user.uid]);
+            }
+          }
+      );
+    } else {
+      alert('Password needs to be verified!');
+    }
   }
 
   ngOnInit() {

@@ -1,7 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {WidgetService} from '../../../../services/widget.service.client';
+import { Component, OnInit } from '@angular/core';
+import {User} from '../../../../models/user.model.client';
+import {Website} from '../../../../models/website.model.client';
+import {Page} from '../../../../models/page.model.client';
 import {Widget} from '../../../../models/widget.model.client';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {WebsiteService} from '../../../../services/website.service.client';
+import {UserService} from '../../../../services/user.service.client';
+import {PageService} from '../../../../services/page.service.client';
+import {WidgetService} from '../../../../services/widget.service.client';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-widget-header',
@@ -9,38 +16,92 @@ import {Widget} from '../../../../models/widget.model.client';
   styleUrls: ['./widget-header.component.css']
 })
 export class WidgetHeaderComponent implements OnInit {
-  widget;
-  userId: String;
-  websiteId: String;
-  pageId: String;
 
-  constructor(private widgetService: WidgetService, private router: Router, private activatedRoute: ActivatedRoute) {
-    this.widget = new Widget('123', 'HEADING', '321');
+  user: User = new User('', '', '', '', '', '');;
+  website: Website = new Website('', '', '', '');
+  page: Page = new Page('', '', '', '');
+  widgets: Widget[];
+  currWidget: Widget = new Widget('', '', '', '', '', '', '');
+  newWidget: Widget = new Widget('', '', '', '', '', '', '');
+
+  constructor(private webService: WebsiteService, private userService: UserService, private sanitizer: DomSanitizer,
+              private pageService: PageService, private widgetService: WidgetService, private route: ActivatedRoute,
+              private router: Router) {}
+
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.userService.findUserById(params['uid']).subscribe(
+          (user: User) => {
+            this.user = user;
+          }
+      );
+      this.webService.findWebsiteById(params['websiteId']).subscribe(
+          (website: Website) => {
+            this.website = website;
+          }
+      );
+      this.pageService.findPageById(params['pageId']).subscribe(
+          (page: Page) => {
+            this.page = page;
+            this.newWidget = new Widget('', 'HEADING', this.page.pageId, '', '', '', '');
+          }
+      );
+      this.widgetService.findWidgetsByPageId(params['pageId']).subscribe(
+          (widgets: Widget[]) => {
+              this.widgets = widgets;
+          }
+      );
+      this.widgetService.findWidgetById(params['widgetId']).subscribe(
+          (widget: any) => {
+              if (widget.message !== 'Widget not found!') {
+                  this.currWidget = widget;
+                  this.newWidget.text = this.currWidget.text;
+                  this.newWidget.size = this.currWidget.size;
+              }
+          }
+      );
+    });
   }
 
   updateWidget() {
-    this.widgetService.updateWidget(this.widget._id, this.widget).subscribe();
+    if (this.currWidget.text !== '') {
+      this.currWidget.text = this.newWidget.text;
+      this.currWidget.size = this.newWidget.size;
+      if (this.currWidget.text !== '') {
+        this.widgetService.updateWidget(this.currWidget.widgetId, this.currWidget).subscribe(
+            (data: any) => {
+              this.router.navigate(['/profile/' + this.user.uid +
+              '/website/' + this.website.websiteId + '/page/' + this.page.pageId + '/widget']);
+            }
+        );
+      } else {
+        alert('Text cannot be empty!');
+      }
+    } else {
+      if (this.newWidget.text !== '') {
+        this.widgetService.createWidget(this.page.pageId, this.newWidget).subscribe(
+            (data: any) => {
+              this.router.navigate(['/profile/' + this.user.uid +
+              '/website/' + this.website.websiteId + '/page/' + this.page.pageId + '/widget']);
+            }
+        );
+      } else {
+        alert('Text cannot be empty!');
+      }
+    }
   }
 
   deleteWidget() {
-    this.widgetService.deleteWidget(this.widget._id).subscribe(widget => {
-      this.router.navigateByUrl('/user/' + this.userId + '/website/' + this.websiteId + '/page/' + this.pageId + '/widget');
-    });
-  }
-
-  ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-      this.userId = params['uid'];
-      this.pageId = params['pid'];
-      this.websiteId = params['wid'];
-      this.widget._id = params['wgid'];
-    });
-    this.widgetService.findWidgetById(this.widget._id)
-      .subscribe(data => {
-        console.log('in widget-header-edit comp...');
-        console.log(data);
-        this.widget = data;
-      });
+    this.widgetService.deleteWidget(this.currWidget.widgetId).subscribe(
+        (data: any) => {
+            if (data.message !== 'Widget not found!') {
+                this.router.navigate(['/profile/' + this.user.uid +
+                '/website/' + this.website.websiteId + '/page/' + this.page.pageId + '/widget']);
+            } else {
+                alert('This widget has not been created yet!');
+            }
+        }
+    );
   }
 
 }

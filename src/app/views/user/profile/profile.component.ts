@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {UserService} from '../../../services/user.service.client';
+import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../../../models/user.model.client';
-
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
@@ -10,29 +10,30 @@ import {User} from '../../../models/user.model.client';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+  @ViewChild('f') profileForm: NgForm;
+  user: User = new User('', '', '', '', '', '');
 
-  user: User;
 
-  constructor(private userService: UserService, private router: ActivatedRoute) {
-    this.user = new User('111', 'alice', 'alice', 'alice', 'alice', 'alice@alice');
-  }
+    constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) { }
 
-  UpdateUser() {
-    this.userService.updateUser(this.user).subscribe();
+  updateUser() {
+    this.userService.updateUser(this.user.uid, this.user).subscribe(
+        (user: User) => {
+          this.user = user;
+            this.router.navigate(['/profile/', user.uid]);
+        }
+    );
+    alert('Update successfully!');
   }
 
   ngOnInit() {
-
-    this.router.params.subscribe(params => {
-      this.user._id = params['uid'];
-      console.log('user id: ' + this.user._id);
+    this.route.params.subscribe(params => {
+      this.userService.findUserById(params['uid']).subscribe(
+          (user: User) => {
+            this.user = user;
+            // this.user = new User(user.uid, user.username, user.password, user.firstName, user.lastName, user.email);
+          }
+      );
     });
-
-    this.userService.findUserById(this.user._id.toString())
-      .subscribe(data => {
-        console.log('in login comp...');
-        console.log(data);
-        this.user = data;
-      });
   }
 }

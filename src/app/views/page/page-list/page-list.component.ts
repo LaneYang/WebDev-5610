@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import {User} from '../../../models/user.model.client';
+import {Website} from '../../../models/website.model.client';
+import {WebsiteService} from '../../../services/website.service.client';
+import {UserService} from '../../../services/user.service.client';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Page} from '../../../models/page.model.client';
 import {PageService} from '../../../services/page.service.client';
-import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-page-list',
@@ -8,23 +13,32 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['./page-list.component.css']
 })
 export class PageListComponent implements OnInit {
-  userId: String;
-  websiteId: String;
-  pages: [{}];
-  constructor(private pageService: PageService, private activatedRoute: ActivatedRoute) { }
+
+  user: User = new User('', '', '', '', '', '');
+  website: Website = new Website('', '', '', '');
+  pages: Page[];
+
+  constructor(private webService: WebsiteService, private userService: UserService,
+              private pageService: PageService, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe((params: any) => {
-      this.userId = params['uid'];
-      this.websiteId = params['wid'];
-
+    this.route.params.subscribe(params => {
+      this.userService.findUserById(params['uid']).subscribe(
+          (user: User) => {
+            this.user = user;
+          }
+      );
+      this.webService.findWebsiteById(params['websiteId']).subscribe(
+          (website: Website) => {
+            this.website = website;
+          }
+      );
+      this.pageService.findPageByWebsiteId(params['websiteId']).subscribe(
+          (pages: Page[]) => {
+            this.pages = pages;
+          }
+      );
     });
-    this.pageService.findPagesByWebsiteId(this.websiteId)
-      .subscribe(data => {
-        console.log('in page-list comp...');
-        console.log(data);
-        this.pages = data;
-      });
   }
 
 }

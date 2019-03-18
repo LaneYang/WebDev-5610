@@ -1,47 +1,71 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {PageService} from '../../../services/page.service.client';
+import { Component, OnInit } from '@angular/core';
+import {User} from '../../../models/user.model.client';
+import {Website} from '../../../models/website.model.client';
 import {Page} from '../../../models/page.model.client';
-
+import {WebsiteService} from '../../../services/website.service.client';
+import {UserService} from '../../../services/user.service.client';
+import {PageService} from '../../../services/page.service.client';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-page-edit',
   templateUrl: './page-edit.component.html',
   styleUrls: ['./page-edit.component.css']
 })
-
 export class PageEditComponent implements OnInit {
-  page: Page;
-  userId: String;
-  websiteId: String;
 
-  constructor(private pageService: PageService, private router: Router, private activatedRoute: ActivatedRoute) {
-    this.page = new Page('321', 'Post 1', '456', 'Lorem');
+  user: User = new User('', '', '', '', '', '');
+  website: Website = new Website('', '', '', '');
+  pages: Page[];
+  currPage: Page = new Page('', '', '', '');
+
+  constructor(private webService: WebsiteService, private userService: UserService,
+              private pageService: PageService, private route: ActivatedRoute, private router: Router) {}
+
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.userService.findUserById(params['uid']).subscribe(
+          (user: User) => {
+            this.user = user;
+          }
+      );
+      this.webService.findWebsiteById(params['websiteId']).subscribe(
+          (website: Website) => {
+            this.website = website;
+          }
+      );
+      this.pageService.findPageByWebsiteId(params['websiteId']).subscribe(
+          (pages: Page[]) => {
+            this.pages = pages;
+          }
+      );
+      this.pageService.findPageById(params['pageId']).subscribe(
+          (page: Page) => {
+            this.currPage = page;
+          }
+      );
+    });
   }
 
   updatePage() {
-    this.pageService.updatePage(this.page._id, this.page).subscribe();
+    if (this.currPage.name && this.currPage.description) {
+      this.pageService.updatePage(this.currPage.pageId, this.currPage).subscribe(
+          (page: Page) => {
+            this.currPage = page;
+            this.router.navigate(['/profile/' + this.user.uid + '/website/' + this.website.websiteId + '/page']);
+          }
+      );
+    } else {
+      alert('Please enter page name and title!');
+    }
   }
 
   deletePage() {
-    this.pageService.deletePage(this.page._id).subscribe(page => {
-      this.router.navigateByUrl('/user/' + this.userId + '/website/' + this.websiteId + '/page');
-    });
-  }
-
-  ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-      this.userId = params['uid'];
-      this.page._id = params['pid'];
-      this.websiteId = params['wid'];
-      console.log('page id: ' + this.page._id);
-    });
-    this.pageService.findPageById(this.page._id)
-      .subscribe(data => {
-        console.log('in page-edit comp...');
-        console.log(data);
-        this.page = data;
-      });
+    this.pageService.deletePage(this.currPage.pageId).subscribe(
+        (data: any) => {
+            this.router.navigate(['/profile/' + this.user.uid + '/website/' + this.website.websiteId + '/page']);
+        }
+    );
   }
 
 }

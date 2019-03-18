@@ -1,109 +1,98 @@
 module.exports = function (app) {
+    var users = [
+        {uid: '123', username: 'alice',    password: 'alice',    firstName: 'Alice',  lastName: 'Wonderland', email: "alice@wonder"  },
+        {uid: '234', username: 'bob',      password: 'bob',      firstName: 'Bob',    lastName: 'Marley' , email: "bob@hotmail"},
+        {uid: '345', username: 'charly',   password: 'charly',   firstName: 'Charly', lastName: 'Garcia' , email: "charly@google"},
+        {uid: '456', username: 'jannunzi', password: 'jannunzi', firstName: 'Jose',   lastName: 'Annunzi', email: "jannunzi@yahoo"}
+    ];
+    app.post('/api/user', createUser);
+    // app.get('/api/user?username=username', findUserByUserName);
+    app.get('/api/user', findUserByCredentials);
+    app.get('/api/user/:uid', findUserById);
+    app.put('/api/user/:uid', updateUserById);
+    app.delete('/api/user/:uid', deleteUserById);
 
-  var users = [
-    {_id: "123", username: "alice", password: "alice", firstName: "Alice", lastName: "Wonderland"},
-    {_id: "234", username: "bob", password: "bob", firstName: "Bob", lastName: "Marley"},
-    {_id: "345", username: "charly", password: "charly", firstName: "Charly", lastName: "Garcia"},
-    {_id: "456", username: "jannunzi", password: "jannunzi", firstName: "Jose", lastName: "Annunzi"}
-  ];
-
-  app.get("/api/user/:userId", findUserById);
-  app.get("/api/user", findUserByCredential);
-  app.get("/api/user", findUserByUsername);
-  app.post("/api/user", createUser);
-  app.put("/api/user/:userId", updateUser);
-  app.delete("/api/user/:userId", deleteUser);
-
-  function createUser(req, res) {
-    console.log("create user");
-    let user = req.body;
-    for (var i = 0; i < users.length; i++) {
-      if (users[i].username === user["username"]) {
-        res.status(404).send("This username is already exist.");
-        return;
-      }
+    function createUser(req, res) {
+        var user = req.body;
+        user.uid = new Date().getTime() + '';
+        for (let x = 0; x < users.length; x++) {
+            if (users[x].username === user.username) {
+                res.status(200).send({message: 'User is already exist!'});
+                return;
+            }
+        }
+        users.push(user);
+        res.status(200).send(user);
     }
-    user._id = Math.round(Math.random() * 1000).toString();
-    users.push(user);
-    res.send(user);
-  }
 
-  function findUserById(req, res) {
-
-    console.log("hit find user by id...");
-
-    var id = req.params.userId;
-
-    for (let i in users) {
-      if (users[i]._id === id) {
-        res.send(users[i]);
-        return;
-      }
+    function findUserByUserName(req, res) {
+        let username = req.query.username;
+        var user = null;
+        for (let x = 0; x < users.length; x++) {
+            if (users[x].username === username) {
+                user = users[x];
+                res.status(200).send(user);
+                return;
+            }
+        }
+        res.json({message: 'User not found!'});
     }
-    res.send({});
-  }
 
-  function findUserByCredential(req, res) {
-    let username = req.query['username'];
-    let password = req.query['password'];
-    for (let i in users) {
-      if (users[i].username === username && users[i].password === password) {
-        res.send(users[i]);
-        return;
-      }
-    }
-    res.send({});
-  }
+    function findUserByCredentials(req, res) {
+        let username = req.query.username;
+        let password = req.query.password;
 
-  function findUserByUsername(req, res) {
-    console.log("hit find user by username...");
-    let username = req.query['username'];
-    for (let i in users) {
-      if (users[i].username === username) {
-        res.send(users[i]);
-        return;
-      }
+        var user = null;
+        for (let x = 0; x < users.length; x++) {
+            if (users[x].username === username
+                && users[x].password === password) {
+                user = users[x];
+                res.status(200).send(user);
+                return;
+            }
+        }
+        res.json({message: 'User not found or Wrong password!'});
     }
-    res.send({});
-  }
 
-  function updateUser(req, res) {
-    console.log("update user");
-    let userId = req.params.userId;
-    let index;
-    for (let x = 0; x < users.length; x++) {
-      if (users[x]._id === userId) {
-        index = x;
-      }
+    function findUserById(req, res) {
+        var userId = req.params['uid'];
+        var user = null;
+        for (let x = 0; x < users.length; x++) {
+            if (users[x].uid === userId) {
+                user = users[x];
+                res.status(200).send(user);
+                return;
+            }
+        }
+        res.json({message: 'User not found!'});
     }
-    let user = req.body;
-    users[index] = user;
-    res.send(user);
-  }
 
-  function deleteUser(req, res) {
-    console.log("delete user");
-    let userId = req.params.userId;
-    let index;
-    for (let x = 0; x < users.length; x++) {
-      if (users[x]._id === userId) {
-        index = x;
-      }
+
+
+    function updateUserById(req, res) {
+        var userId = req.params['uid'];
+        var user = req.body;
+        for (let x = 0; x < users.length; x++) {
+            if (users[x].uid === userId) {
+                users[x].firstName = user.firstName;
+                users[x].lastName = user.lastName;
+                users[x].email = user.email;
+                res.status(200).send(users[x]);
+                return;
+            }
+        }
+        res.json({message: 'User not found!'});
     }
-    let user = users[index];
-    users.splice(index, 1);
-    res.send(user);
-  }
-//demo hello world api calls
-//   app.get("/api/hello", function (req, res) {
-//     console.log("Get hello api call!");
-//     res.send("Hello world!");
-//   });
-//
-//
-//   app.get("/api/hello-world", hello);
-//
-//   function hello(req, res) {
-//     res.status(200).send("Hitting hello world js file....");
-//   }
+
+    function deleteUserById(req, res) {
+        var userId = req.params['uid'];
+        for (let x = 0; x < users.length; x++) {
+            if (users[x].uid === userId) {
+                users.splice(x, 1);
+                res.status(200).send(users);
+                return;
+            }
+        }
+        res.json({message: 'User not found!'});
+    }
 }

@@ -1,85 +1,74 @@
 module.exports = function (app) {
+    var pages = [
+        {pageId: '1111', name: 'ipsum', websiteId: '123', description: 'Lorem'},
+        {pageId: '2222', name: 'ipsum2', websiteId: '123', description: 'Lorem'},
+        {pageId: '3333', name: 'ipsum3', websiteId: '123', description: 'Lorem'},
+        {pageId: '4444', name: 'ipsum4', websiteId: '123', description: 'Lorem'}
+    ];
 
-  var pages = [
+    app.post('/api/website/:websiteId/page', createPage);
+    app.get('/api/website/:websiteId/page', findAllPagesForWebsite);
+    app.get('/api/page/:pageId', findPageById);
+    app.put('/api/page/:pageId', updatePage);
+    app.delete('/api/page/:pageId', deletePage);
 
-    {'_id': '321', 'name': 'Post 1', 'websiteId': '456', 'description': 'Lorem'},
-
-    {'_id': '432', 'name': 'Post 2', 'websiteId': '456', 'description': 'Lorem'},
-
-    {'_id': '543', 'name': 'Post 3', 'websiteId': '456', 'description': 'Lorem'}
-
-  ];
-
-  app.get("/api/page/:pageId", findPageById);
-  app.get("/api/website/:websiteId/page", findAllPagesForWebsite);
-  app.post("/api/website/:websiteId/page", createPage);
-  app.put("/api/page/:pageId", updatePage);
-  app.delete("/api/page/:pageId", deletePage);
-
-  function findPageById(req, res) {
-
-    console.log("hit find page by id...");
-
-    var id = req.params.pageId;
-
-    for (var i in pages) {
-      if (pages[i]._id === id) {
-        res.send(pages[i]);
-        return;
-      }
+    function createPage(req, res) {
+        var websiteId = req.params['websiteId'];
+        var page = req.body;
+        page.pageId = new Date().getTime() + '';
+        page.websiteId = websiteId;
+        pages.push(page);
+        res.status(200).send(page);
     }
-    res.send({});
-  }
 
-  function findAllPagesForWebsite(req, res) {
-    let id = req.params.websiteId;
-    let result = [];
-    for (var i in pages) {
-      if (pages[i].websiteId === id) {
-        result.push(pages[i]);
-      }
+    function findAllPagesForWebsite(req, res) {
+        let websiteId = req.params['websiteId'];
+        const result = [];
+        for (let x = 0; x < pages.length; x++) {
+            if (pages[x].websiteId === websiteId) {
+                result.push(pages[x]);
+            }
+        }
+        res.status(200).send(result);
     }
-    res.send(result);
-  }
 
-
-  function createPage(req, res) {
-    console.log("create page");
-    let websiteId = req.params.websiteId;
-    let page = req.body;
-    page._id = Math.round(Math.random() * 1000).toString();
-    page.websiteId = websiteId;
-    pages.push(page);
-    res.send(page);
-  }
-
-  function updatePage(req, res) {
-    console.log("update page");
-    let pageId = req.params.pageId;
-    let index;
-    for (let x = 0; x < pages.length; x++) {
-      if (pages[x]._id === pageId) {
-        index = x;
-      }
+    function findPageById(req, res) {
+        var pageId = req.params['pageId'];
+        var page = null;
+        for (let x = 0; x < pages.length; x++) {
+            if (pages[x].pageId === pageId) {
+                page = pages[x];
+                res.status(200).send(page);
+                return;
+            }
+        }
+        res.json({message: 'Page not found!'});
     }
-    let page = req.body;
-    pages[index] = page;
-    res.send(page);
-  }
 
-  function deletePage(req, res) {
-    console.log("delete page");
-    let pageId = req.params.pageId;
-    let index;
-    for (let x = 0; x < pages.length; x++) {
-      if (pages[x]._id === pageId) {
-        index = x;
-      }
+    function updatePage(req, res) {
+        var pageId = req.params['pageId'];
+        var page = req.body;
+        for (let x = 0; x < pages.length; x++) {
+            if (pages[x].pageId === pageId) {
+                pages[x].name = page.name;
+                pages[x].description = page.description;
+                res.status(200).send(pages[x]);
+                return;
+            }
+        }
+        res.json({message: 'Page not found!'});
     }
-    let page = pages[index];
-    pages.splice(index, 1);
-    res.send(page);
-  }
 
-
+    function deletePage(req, res) {
+        var pageId = req.params['pageId'];
+        var page = null;
+        for (let x = 0; x < pages.length; x++) {
+            if (pages[x].pageId === pageId) {
+                pages.splice(x, 1);
+                res.status(200).send(pages);
+                return;
+            }
+        }
+        res.json({message: 'Page not found!'});
+    }
 }

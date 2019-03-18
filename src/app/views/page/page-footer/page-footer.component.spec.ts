@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WidgetEditComponent } from './widget-edit.component';
+import { PageFooterComponent } from './page-footer.component';
 
-describe('WidgetEditComponent', () => {
-  let component: WidgetEditComponent;
-  let fixture: ComponentFixture<WidgetEditComponent>;
+describe('PageFooterComponent', () => {
+  let component: PageFooterComponent;
+  let fixture: ComponentFixture<PageFooterComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidgetEditComponent ]
+      declarations: [ PageFooterComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WidgetEditComponent);
+    fixture = TestBed.createComponent(PageFooterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
