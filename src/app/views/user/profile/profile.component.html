@@ -1,7 +1,7 @@
 <header>
     <nav class="navbar fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" routerLink="/profile/{{user.uid}}">Profile</a>
+            <a class="navbar-brand" routerLink="/profile">Profile</a>
             <a (click)="updateUser()"  class="navbar-link navbar-text float-right text-white check-icon">
                 <span class="fas fa-check fontawsome_icon top-right">
                 </span>
@@ -32,10 +32,10 @@
             <input type="email" class="form-control" [(ngModel)]="user.email" id="email" placeholder="{{user.email}}"/>
         </div>
         <div class="form-group">
-            <a routerLink="/profile/{{user.uid}}/website" class="btn btn-block btn-primary">Websites</a>
+            <a routerLink="/profile/website" class="btn btn-block btn-primary">Websites</a>
         </div>
         <div class="form-group">
-            <a routerLink="/login" class="btn btn-block btn-danger">Logout</a>
+            <a (click)="logout()" class="btn btn-block btn-danger">Logout</a>
         </div>
     </div>
 </main>

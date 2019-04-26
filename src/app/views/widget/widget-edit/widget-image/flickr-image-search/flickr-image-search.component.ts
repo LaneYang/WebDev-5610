@@ -3,6 +3,7 @@ import {FlickrService} from '../../../../../services/flickr.service.client';
 import {WidgetService} from '../../../../../services/widget.service.client';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Widget} from '../../../../../models/widget.model.client';
+import {SharedService} from '../../../../../services/shared.service.client';
 
 @Component({
   selector: 'app-flickr-image-search',
@@ -18,9 +19,10 @@ export class FlickrImageSearchComponent implements OnInit {
   photos: [any];
   error: string;
   searchText: string;
+  searched: boolean = false;
 
   constructor(private flickrService: FlickrService, private widgetService: WidgetService,
-              private router: Router, private activatedRoute: ActivatedRoute) { }
+              private router: Router, private activatedRoute: ActivatedRoute, private sharedService: SharedService) { }
 
   ngOnInit() {
     this.activatedRoute.params
@@ -29,7 +31,7 @@ export class FlickrImageSearchComponent implements OnInit {
               this.websiteId = params['websiteId'];
               this.pageId = params['pageId'];
               this.widgetId = params['widgetId'];
-              this.uid = params['uid'];
+              this.uid = this.sharedService.user._id;
             }
         );
   }
@@ -39,11 +41,12 @@ export class FlickrImageSearchComponent implements OnInit {
         .searchPhotos(this.searchText)
         .subscribe(
             (data: any) => {
-              let val = data.body;
+              let val = data;
               val = val.replace('jsonFlickrApi(', '');
               val = val.substring(0, val.length - 1);
               val = JSON.parse(val);
               this.photos = val.photos;
+              this.searched = true;
             }
         );
   }
@@ -52,20 +55,16 @@ export class FlickrImageSearchComponent implements OnInit {
     let url = 'https://farm' + photo.farm + '.staticflickr.com/' + photo.server;
     url += '/' + photo.id + '_' + photo.secret + '_b.jpg';
 
-    const widget = new Widget('', 'IMAGE', this.pageId, '', '', '', url);
+    const widget = new Widget(this.widgetId, 'IMAGE', this.pageId, '', '',
+        '', url, '', true, 1, '');
 
     this.widgetService
         .updateWidget(this.widgetId, widget)
         .subscribe(
             (data: any) => {
-              const result = data;
-              if (!result) {
-                this.error = 'failed!';
-              } else {
-                this.router.navigate(['/profile/' + this.uid + '/website/'
-                + this.websiteId + '/page/' + this.pageId + '/widget/' + this.widgetId]);
+                this.router.navigate(['/profile/website/'
+                + this.websiteId + '/page/' + this.pageId + '/widget/' + this.widgetId + '/edit/image']);
               }
-            }
         );
   }
 

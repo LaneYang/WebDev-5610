@@ -23,12 +23,13 @@ export class LoginComponent implements OnInit {
     this.username = this.loginForm.value.username;
     this.password = this.loginForm.value.password;
 
-    this.userService.findUserByCredentials(this.username, this.password).subscribe(
+    this.userService.login(this.username, this.password).subscribe(
         (user: any) => {
-          if (user.message === 'User not found or Wrong password!') {
-            alert('User does not exist or Wrong Password');
+          if (user === null || user.message === 'User not found or Wrong password!') {
+            this.errorFlag = true;
+            this.errorMsg = 'User does not exist or Wrong Password';
           } else {
-            this.router.navigate(['/profile/' + user.uid]);
+            this.router.navigate(['/profile/']);
           }
         }
     );

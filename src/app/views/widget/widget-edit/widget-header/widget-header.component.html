@@ -2,10 +2,10 @@
   <nav class="navbar fixed-top">
     <div class="container-fluid">
       <p class="navbar-text float-left">
-        <a routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/page/{{page.pageId}}/widget" class="navbar-link text-white">
+        <a routerLink="/profile/website/{{website.websiteId}}/page/{{page.pageId}}/widget" class="navbar-link text-white">
           <span class="fas fa-chevron-left fontawsome_icon top-left"></span>
         </a>
-        <a class="text-white text-bold" routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/page/{{page.pageId}}/widget">
+        <a class="text-white text-bold" routerLink="/profile/website/{{website.websiteId}}/page/{{page.pageId}}/widget">
           Widget Edit
         </a>
       </p>
@@ -17,6 +17,9 @@
   </nav>
 </header>
 <main>
+  <div *ngIf="errorFlag" class="alert alert-danger">
+    {{errorMsg}}
+  </div>
   <div class="container">
       <div class="form-group">
         <label for="heading-text">Text</label>
@@ -26,8 +29,8 @@
         <label for="heading-size">Size</label>
         <input type="text" class="form-control" id="heading-size" [(ngModel)]="newWidget.size" placeholder="{{newWidget.size}}">
       </div>
-    <a class="btn btn-danger  btn-block" *ngIf="currWidget" (click)="deleteWidget()">Delete</a>
-    <a class="btn btn-danger  btn-block" routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/page/{{page.pageId}}/widget">Cancel</a>
+    <a class="btn btn-danger  btn-block" *ngIf="currWidget.text!==''" (click)="deleteWidget()">Delete</a>
+    <a class="btn btn-danger  btn-block" routerLink="/profile/website/{{website.websiteId}}/page/{{page.pageId}}/widget">Cancel</a>
   </div>
 </main>
 <app-page-footer [uid]="user.uid"></app-page-footer>

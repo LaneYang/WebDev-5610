@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit {
   lastName: string;
   email: string;
   errorFlag: boolean;
-  errorMsg = 'Password mis-matching !';
+  errorMsg = '';
 
   constructor(private userService: UserService, private router: Router) {  this.errorFlag = false; }
 
@@ -34,17 +34,20 @@ export class RegisterComponent implements OnInit {
     if (this.v_password === this.password) {
       const user: User = new User(Math.random() + '', this.username, this.password, this.firstName, this.lastName, this.email);
 
-      this.userService.createUser(user).subscribe(
+      this.userService.register(user).subscribe(
           (data: any) => {
             if (data.message === 'User is already exist!') {
-              alert('User is already exist! Please use a new username!');
+              this.errorFlag = true;
+              this.errorMsg = 'User is already exist! Please use a new username!';
             } else {
-              this.router.navigate(['/profile/' + user.uid]);
+
+              this.router.navigate(['/profile']);
             }
           }
       );
     } else {
-      alert('Password needs to be verified!');
+      this.errorFlag = true;
+      this.errorMsg = 'Password needs to be verified!';
     }
   }
 

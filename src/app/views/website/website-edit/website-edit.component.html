@@ -3,26 +3,26 @@
     <div class="row colrow">
       <div class="col-sm-4 container-fluid d-none d-sm-block">
         <p class="navbar-text float-left">
-          <a routerLink="/profile/{{user.uid}}/website" class="navbar-link text-white">
+          <a routerLink="/profile/website" class="navbar-link text-white">
             <span class="fas fa-chevron-left fontawsome_icon top-left">
             </span>
           </a>
-          <a class="text-white text-bold" routerLink="/profile/{{user.uid}}/website">
+          <a class="text-white text-bold" routerLink="/profile/website">
             Websites
           </a>
         </p>
-        <a routerLink="/profile/{{user.uid}}/website/new" class="navbar-link navbar-text float-right text-white">
+        <a routerLink="/profile/website/new" class="navbar-link navbar-text float-right text-white">
           <span class="fas fa-plus fontawsome_icon top-right">
           </span>
         </a>
       </div>
       <div class="col-sm-8 container-fluid">
         <p class="navbar-text float-left">
-          <a routerLink="/profile/{{user.uid}}/website" class="navbar-link text-white d-inline d-sm-none d-md-none d-lg-none">
+          <a routerLink="/profile/website" class="navbar-link text-white d-inline d-sm-none d-md-none d-lg-none">
             <span class="fas fa-chevron-left fontawsome_icon top-left">
             </span>
           </a>
-          <a class="text-white text-bold" routerLink="/profile/{{user.uid}}/website/{{currWebsite.websiteId}}/edit">
+          <a class="text-white text-bold" routerLink="/profile/website/{{currWebsite.websiteId}}/edit">
             Edit Website
           </a>
         </p>
@@ -35,13 +35,16 @@
   </nav>
 </header>
 <main>
+  <div *ngIf="errorFlag" class="alert alert-danger">
+    {{errorMsg}}
+  </div>
   <div class="container-fluid">
     <div class="row colrow">
       <div class="col-sm-4 d-none d-sm-block">
         <ul class="list-group">
           <li class="list-group-item" *ngFor="let website of websites">
-            <a routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/page">{{website.name}}</a>
-            <a routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/edit">
+            <a routerLink="/profile/website/{{website.websiteId}}/page">{{website.name}}</a>
+            <a routerLink="/profile/website/{{website.websiteId}}/edit">
               <span class="fas fa-cog fontawsome_icon main-icon float-right">
               </span>
             </a>

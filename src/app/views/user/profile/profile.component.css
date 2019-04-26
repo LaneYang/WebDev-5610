@@ -3,11 +3,16 @@ nav {
 }
 
 .text-white{
-    color: #fff;
+    color: #fff !important;
 }
 
 .check-icon {
     cursor: pointer !important;
+}
+
+a:not([href]):not([tabindex]) {
+    text-decoration: none;
+    color: #fff !important;
 }
 
 

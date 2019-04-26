@@ -2,7 +2,7 @@
   <nav class="navbar fixed-top">
     <div class="container-fluid">
       <p class="navbar-text float-left">
-        <a routerLink="/profile/{{uid}}/website/{{websiteId}}/page/{{pageId}}/widget" class="navbar-link text-white">
+        <a routerLink="/profile/website/{{websiteId}}/page/{{pageId}}/widget" class="navbar-link text-white">
           <span class="fas fa-chevron-left fontawsome_icon top-left"></span>
         </a>
         <a class="text-white text-bold">
@@ -23,8 +23,8 @@
         </span>
     </div>
 
-    <div class="row">
-      <div *ngFor = "let pic of photos"
+    <div *ngIf="searched" class="row">
+      <div  *ngFor = "let pic of photos['photo']"
            class="col-xs-4">
         <img (click)="selectPhoto(pic)"
              width = "100%"

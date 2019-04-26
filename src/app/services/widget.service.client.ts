@@ -13,9 +13,14 @@ export class WidgetService {
 
 
     widgets = [
-        new Widget('001', 'HEADING', '001', '30', 'Oldham to learn Scholes decision on Thursday', '100%', ''),
-        new Widget('234', 'IMAGE', '001', '2','GIZMODO', '100%', 'https://thesefootballtimes.co/wp-content/uploads/2016/02/scholes.jpg'),
-        new Widget('123', 'YOUTUBE', '001', '1', '', '80%', 'https://www.youtube.com/embed/APexI9Zb6iE')
+        new Widget('001', 'HEADING', '001', '30', 'Oldham to learn Scholes decision on Thursday', '100%',
+            '', '', true, 1, ''),
+        new Widget('234', 'IMAGE', '001',
+            '2','GIZMODO', '100%', 'https://thesefootballtimes.co/wp-content/uploads/2016/02/scholes.jpg', '',
+            true, 1, ''),
+        new Widget('123', 'YOUTUBE', '001',
+            '1', '', '80%', 'https://www.youtube.com/embed/APexI9Zb6iE', '',
+            true, 1, '')
     ];
 
     api = {
@@ -53,6 +58,35 @@ export class WidgetService {
     uploadImage(info: any) {
         return this._http.post(this.baseUrl + '/api/uploads', info);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

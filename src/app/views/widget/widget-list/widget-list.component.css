@@ -43,6 +43,19 @@ nav {
     height: 60%;
 }
 
-/*.widget-icon {*/
-    /*margin-top: 20px;*/
-/*}*/
+.youtube-widget {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.youtube-widget iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+

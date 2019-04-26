@@ -2,10 +2,10 @@
   <nav class="navbar fixed-top">
     <div class="container-fluid">
       <p class="navbar-text float-left">
-        <a routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/page/{{page.pageId}}/widget" class="navbar-link text-white">
+        <a routerLink="/profile/website/{{website.websiteId}}/page/{{page.pageId}}/widget" class="navbar-link text-white">
           <span class="fas fa-chevron-left fontawsome_icon top-left"></span>
         </a>
-        <a class="text-white text-bold" routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/page/{{page.pageId}}/widget">
+        <a class="text-white text-bold" routerLink="/profile/website/{{website.websiteId}}/page/{{page.pageId}}/widget">
           Widget Edit
         </a>
       </p>
@@ -17,6 +17,9 @@
   </nav>
 </header>
 <main>
+    <div *ngIf="errorFlag" class="alert alert-danger">
+        {{errorMsg}}
+    </div>
   <div class="container">
       <div class="form-group">
         <label for="image-text">Text</label>
@@ -53,10 +56,10 @@
         <button (click)="onUpload()" class="btn btn-block btn-primary">Upload Image</button>
       </div>
     <!--</form>-->
-      <a *ngIf="currWidget.widgetId" class="btn btn-primary btn-block" routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/page/{{page.pageId}}/widget/{{currWidget.widgetId}}/flickr">Choose From Flickr</a>
-    <a class="btn btn-danger  btn-block" *ngIf="currWidget" (click)="deleteWidget()">Delete</a>
+      <a *ngIf="currWidget.widgetId" class="btn btn-primary btn-block" routerLink="/profile/website/{{website.websiteId}}/page/{{page.pageId}}/widget/{{currWidget.widgetId}}/flickr">Choose From Flickr</a>
+    <a class="btn btn-danger  btn-block" *ngIf="currWidget.url!==''" (click)="deleteWidget()">Delete</a>
     <a class="btn btn-danger  btn-block"
-       routerLink="/profile/{{user.uid}}/website/{{website.websiteId}}/page/{{page.pageId}}/widget">Cancel</a>
+       routerLink="/profile/website/{{website.websiteId}}/page/{{page.pageId}}/widget">Cancel</a>
   </div>
 </main>
 <app-page-footer [uid]="user.uid"></app-page-footer>

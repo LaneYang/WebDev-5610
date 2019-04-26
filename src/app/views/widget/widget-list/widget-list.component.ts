@@ -10,6 +10,7 @@ import {Widget} from '../../../models/widget.model.client';
 import {WidgetService} from '../../../services/widget.service.client';
 import {DomSanitizer, SafeResourceUrl, SafeStyle, SafeUrl} from '@angular/platform-browser';
 import {Observable} from 'rxjs';
+import {SharedService} from '../../../services/shared.service.client';
 
 @Component({
   selector: 'app-widget-list',
@@ -18,37 +19,42 @@ import {Observable} from 'rxjs';
   })
 export class WidgetListComponent implements OnInit {
 
-  user: User = new User('', '', '', '', '', '');;
+  user: User = new User('', '', '', '', '', '');
   website: Website = new Website('', '', '', '');
   page: Page = new Page('', '', '', '');
-  widgets: Widget[];
+  widgets: Widget[] = [];
   styleValue: SafeStyle;
   videoUrl: SafeResourceUrl;
 
   constructor(private webService: WebsiteService, private userService: UserService, private sanitizer: DomSanitizer,
               private pageService: PageService, private widgetService: WidgetService, private route: ActivatedRoute,
-              private router: Router) {}
+              private router: Router, private sharedService: SharedService) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.userService.findUserById(params['uid']).subscribe(
-          (user: User) => {
-            this.user = user;
+      this.userService.findUserById(this.sharedService.user._id).subscribe(
+          (user: any) => {
+            this.user = new User(user._id, user.username, user.password, user.firstName, user.lastName, user.email);
           }
       );
       this.webService.findWebsiteById(params['websiteId']).subscribe(
-          (website: Website) => {
-            this.website = website;
+          (website: any) => {
+            this.website = new Website(website._id, website.name, website.developerId, website.description);
           }
       );
       this.pageService.findPageById(params['pageId']).subscribe(
-          (page: Page) => {
-            this.page = page;
+          (page: any) => {
+            this.page = new Page(page._id, page.name, page.websiteId, page.description);
           }
       );
       this.widgetService.findWidgetsByPageId(params['pageId']).subscribe(
-          (widgets: Widget[]) => {
-            this.widgets = widgets;
+          (widgets: any[]) => {
+              for(var i = 0; i < widgets.length; i++) {
+                  const widget = widgets[i];
+                  const newWid = new Widget(widget._id, widget.type, widget.pageId,
+                      widget.size, widget.text, widget.width, widget.url, widget.name, widget.formatted, widget.rows, widget.placeholder);
+                  this.widgets.push(newWid);
+              }
           }
       );
     });
@@ -60,10 +66,10 @@ export class WidgetListComponent implements OnInit {
   }
 
   checkVideoUrl(url: string) {
-    // Appending an ID to a YouTube URL is safe.
-    // Always make sure to construct SafeValue objects as
-    // close as possible to the input data so
-    // that it's easier to check if the value is safe.
+
+
+
+
     this.videoUrl =
         this.sanitizer.bypassSecurityTrustResourceUrl(url);
     return this.videoUrl;
@@ -71,9 +77,9 @@ export class WidgetListComponent implements OnInit {
 
     reorderItems(indexes) {
         this.widgetService.reorderWidget(this.page.pageId, indexes.startIndex, indexes.endIndex).subscribe(
-            (widgets: Widget[]) => {
-                this.router.navigate(['/profile/' + this.user.uid +
-                '/website/' + this.website.websiteId + '/page/' + this.page.pageId + '/widget']);
+            (widgets: any[]) => {
+                this.router.navigate(['/profile/website/' + this.website.websiteId
+                + '/page/' + this.page.pageId + '/widget']);
             }
         );
     }

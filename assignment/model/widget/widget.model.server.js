@@ -90,23 +90,23 @@ function reorderWidget(pageId, start, end) {
         }, function (err) {
             console.log(err);
         });
-    // return pageModel.findPageById(pageId).then(
-    //     function (page) {
-    //         let result = JSON.parse(JSON.stringify(page.widgets));
-    //         // console.log(test);
-    //         array_swap(result, start, end);
-    //         // console.log(test);
-    //         for (var i = 0; i < result.length; i++) {
-    //             widgetModel.updateWidget(result[i]._id, result[i]);
-    //         }
-    //     }
-    // )
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
 
-// function array_swap(arr, startIndex, endIndex) {
-//     arr.splice(endIndex, 0, arr.splice(startIndex, 1));
-// }
+
+
+
 
 module.exports = widgetModel;

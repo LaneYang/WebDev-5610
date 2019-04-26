@@ -44,4 +44,32 @@ export class PageService {
         return this._http.delete(this.baseUrl + '/api/page/' + pageId);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

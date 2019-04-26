@@ -22,13 +22,20 @@ import {UserService} from './services/user.service.client';
 import {WebsiteService} from './services/website.service.client';
 import {PageService} from './services/page.service.client';
 import {WidgetService} from './services/widget.service.client';
-
+import { HomeComponent } from './views/home/home.component';
 import { WebsiteFooterComponent } from './views/website/website-footer/website-footer.component';
 import { PageFooterComponent } from './views/page/page-footer/page-footer.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {SortableDirective} from './directives/sortable.directive';
 import { FlickrImageSearchComponent } from './views/widget/widget-edit/widget-image/flickr-image-search/flickr-image-search.component';
 import {FlickrService} from './services/flickr.service.client';
+import { WidgetHtmlComponent } from './views/widget/widget-edit/widget-html/widget-html.component';
+import { WidgetTextComponent } from './views/widget/widget-edit/widget-text/widget-text.component';
+import { QuillEditorModule } from 'ngx-quill-editor';
+import {SharedService} from './services/shared.service.client';
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {AuthGuard} from './services/auth-guard.service.client';
+
 
 @NgModule({
   declarations: [
@@ -47,19 +54,24 @@ import {FlickrService} from './services/flickr.service.client';
     WidgetHeaderComponent,
     WidgetImageComponent,
     WidgetYoutubeComponent,
-
+    HomeComponent,
     WebsiteFooterComponent,
     PageFooterComponent,
     SortableDirective,
-    FlickrImageSearchComponent
+    FlickrImageSearchComponent,
+    WidgetHtmlComponent,
+    WidgetTextComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
+    QuillEditorModule
   ],
-  providers: [UserService, WebsiteService, PageService, WidgetService, FlickrService, HttpClient],
+  providers: [UserService, WebsiteService, PageService,
+    WidgetService, FlickrService, HttpClient, SharedService, AuthGuard, {provide: LocationStrategy, useClass: HashLocationStrategy}
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

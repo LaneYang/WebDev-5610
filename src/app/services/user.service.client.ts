@@ -1,16 +1,26 @@
 import {Injectable} from '@angular/core';
 import {User} from '../models/user.model.client';
-import {HttpClient, HttpResponse} from '@angular/common/http';
-import 'rxjs';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs';
-
+import {SharedService} from './shared.service.client';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class UserService {
-    constructor(private _http: HttpClient) {}
+    constructor(private _http: HttpClient, private sharedService: SharedService, private router: Router) {}
 
     baseUrl = environment.baseUrl;
+
+    headers = new HttpHeaders({
+        'Content-Type': 'application/json'
+    });
+
+    options = {
+        headers: this.headers,
+        withCredentials: true
+    };
 
 
     users = [
@@ -50,5 +60,69 @@ export class UserService {
     deleteUser(userId: string) {
         return this._http.delete(this.baseUrl + '/api/user/' + userId);
     }
+
+    login(username: String, password: String) {
+        this.options.withCredentials = true;
+        const body = {username: username, password: password};
+        return this._http.post(this.baseUrl + '/api/login', body, this.options);
+    }
+
+    logout() {
+        this.options.withCredentials = true;
+        return this._http.post(this.baseUrl + '/api/logout', '', this.options);
+    }
+
+    register(user: User) {
+        this.options.withCredentials = true;
+        return this._http.post(this.baseUrl + '/api/register', user, this.options);
+    }
+
+    loggedIn() {
+        this.options.withCredentials = true;
+        return this._http.post(this.baseUrl + '/api/loggedIn', '', this.options).pipe(
+            map((user: any) => {
+                if (user !== '0') {
+                    this.sharedService.user = user;
+                    return true;
+                } else {
+                    this.router.navigate(['/login']);
+                    return false; }
+            })
+            );
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

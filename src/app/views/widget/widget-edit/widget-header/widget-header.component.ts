@@ -9,6 +9,7 @@ import {UserService} from '../../../../services/user.service.client';
 import {PageService} from '../../../../services/page.service.client';
 import {WidgetService} from '../../../../services/widget.service.client';
 import {ActivatedRoute, Router} from '@angular/router';
+import {SharedService} from '../../../../services/shared.service.client';
 
 @Component({
   selector: 'app-widget-header',
@@ -20,41 +21,54 @@ export class WidgetHeaderComponent implements OnInit {
   user: User = new User('', '', '', '', '', '');;
   website: Website = new Website('', '', '', '');
   page: Page = new Page('', '', '', '');
-  widgets: Widget[];
-  currWidget: Widget = new Widget('', '', '', '', '', '', '');
-  newWidget: Widget = new Widget('', '', '', '', '', '', '');
+  widgets: Widget[] = [];
+  currWidget: Widget = new Widget('', '', '',
+      '', '', '', '', '', true, 1, '');
+  newWidget: Widget = new Widget('', '',
+      '', '', '', '', '', '',  true, 1, '');
+  errorFlag: boolean;
+  errorMsg = '';
 
   constructor(private webService: WebsiteService, private userService: UserService, private sanitizer: DomSanitizer,
               private pageService: PageService, private widgetService: WidgetService, private route: ActivatedRoute,
-              private router: Router) {}
+              private router: Router, private  sharedService: SharedService) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.userService.findUserById(params['uid']).subscribe(
-          (user: User) => {
-            this.user = user;
+      this.userService.findUserById(this.sharedService.user._id).subscribe(
+          (user: any) => {
+            this.user = new User(user._id, user.username, user.password, user.firstName, user.lastName, user.email);
           }
       );
       this.webService.findWebsiteById(params['websiteId']).subscribe(
-          (website: Website) => {
-            this.website = website;
+          (website: any) => {
+            this.website = new Website(website._id, website.name, website.developerId, website.description);
           }
       );
       this.pageService.findPageById(params['pageId']).subscribe(
-          (page: Page) => {
-            this.page = page;
-            this.newWidget = new Widget('', 'HEADING', this.page.pageId, '', '', '', '');
+          (page: any) => {
+            this.page = new Page(page._id, page.name, page.websiteId, page.description);
+            this.newWidget = new Widget('', 'HEADING', this.page.pageId, '', '', '', '', '',
+                true, 1, '');
           }
       );
       this.widgetService.findWidgetsByPageId(params['pageId']).subscribe(
-          (widgets: Widget[]) => {
-              this.widgets = widgets;
+          (widgets: any[]) => {
+              for(var i = 0; i < widgets.length; i++) {
+                  const widget = widgets[i];
+                  const newWid = new Widget(widget._id, widget.type,
+                      widget.pageId, widget.size, widget.text, widget.width,
+                      widget.url, widget.name, widget.formatted, widget.rows, widget.placeholder);
+                  this.widgets.push(newWid);
+              }
           }
       );
       this.widgetService.findWidgetById(params['widgetId']).subscribe(
           (widget: any) => {
               if (widget.message !== 'Widget not found!') {
-                  this.currWidget = widget;
+                  this.currWidget = new Widget(widget._id, widget.type, widget.pageId,
+                      widget.size, widget.text,
+                      widget.width, widget.url, widget.name,  widget.formatted, widget.rows, widget.placeholder);
                   this.newWidget.text = this.currWidget.text;
                   this.newWidget.size = this.currWidget.size;
               }
@@ -70,23 +84,25 @@ export class WidgetHeaderComponent implements OnInit {
       if (this.currWidget.text !== '') {
         this.widgetService.updateWidget(this.currWidget.widgetId, this.currWidget).subscribe(
             (data: any) => {
-              this.router.navigate(['/profile/' + this.user.uid +
-              '/website/' + this.website.websiteId + '/page/' + this.page.pageId + '/widget']);
+              this.router.navigate(['/profile/website/' + this.website.websiteId
+              + '/page/' + this.page.pageId + '/widget']);
             }
         );
       } else {
-        alert('Text cannot be empty!');
+          this.errorFlag = true;
+          this.errorMsg = 'Text cannot be empty!';
       }
     } else {
       if (this.newWidget.text !== '') {
         this.widgetService.createWidget(this.page.pageId, this.newWidget).subscribe(
             (data: any) => {
-              this.router.navigate(['/profile/' + this.user.uid +
-              '/website/' + this.website.websiteId + '/page/' + this.page.pageId + '/widget']);
+              this.router.navigate(['/profile/website/'
+              + this.website.websiteId + '/page/' + this.page.pageId + '/widget']);
             }
         );
       } else {
-        alert('Text cannot be empty!');
+          this.errorFlag = true;
+          this.errorMsg = 'Text cannot be empty!';
       }
     }
   }
@@ -94,12 +110,8 @@ export class WidgetHeaderComponent implements OnInit {
   deleteWidget() {
     this.widgetService.deleteWidget(this.currWidget.widgetId).subscribe(
         (data: any) => {
-            if (data.message !== 'Widget not found!') {
-                this.router.navigate(['/profile/' + this.user.uid +
-                '/website/' + this.website.websiteId + '/page/' + this.page.pageId + '/widget']);
-            } else {
-                alert('This widget has not been created yet!');
-            }
+            this.router.navigate(['/profile/website/' + this.website.websiteId
+            + '/page/' + this.page.pageId + '/widget']);
         }
     );
   }

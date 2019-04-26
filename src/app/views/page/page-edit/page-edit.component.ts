@@ -6,6 +6,7 @@ import {WebsiteService} from '../../../services/website.service.client';
 import {UserService} from '../../../services/user.service.client';
 import {PageService} from '../../../services/page.service.client';
 import {ActivatedRoute, Router} from '@angular/router';
+import {SharedService} from '../../../services/shared.service.client';
 
 @Component({
   selector: 'app-page-edit',
@@ -16,54 +17,61 @@ export class PageEditComponent implements OnInit {
 
   user: User = new User('', '', '', '', '', '');
   website: Website = new Website('', '', '', '');
-  pages: Page[];
+  pages: Page[] = [];
   currPage: Page = new Page('', '', '', '');
+  errorFlag: boolean;
+  errorMsg = '';
 
   constructor(private webService: WebsiteService, private userService: UserService,
-              private pageService: PageService, private route: ActivatedRoute, private router: Router) {}
+              private pageService: PageService, private route: ActivatedRoute,
+              private router: Router, private sharedService: SharedService) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.userService.findUserById(params['uid']).subscribe(
-          (user: User) => {
-            this.user = user;
+      this.userService.findUserById(this.sharedService.user._id).subscribe(
+          (user: any) => {
+              this.user = new User(user._id, user.username, user.password, user.firstName, user.lastName, user.email);
           }
       );
       this.webService.findWebsiteById(params['websiteId']).subscribe(
-          (website: Website) => {
-            this.website = website;
+          (website: any) => {
+            this.website = new Website(website._id, website.name, website.developerId, website.description);
           }
       );
       this.pageService.findPageByWebsiteId(params['websiteId']).subscribe(
-          (pages: Page[]) => {
-            this.pages = pages;
+          (pages: any[]) => {
+              for(var i = 0; i < pages.length; i++) {
+                  const page = pages[i];
+                  const newPage = new Page(page._id, page.name, page.websiteId, page.description);
+                  this.pages.push(newPage);
+              }
           }
       );
       this.pageService.findPageById(params['pageId']).subscribe(
-          (page: Page) => {
-            this.currPage = page;
+          (page: any) => {
+            this.currPage = new Page(page._id, page.name, page.websiteId, page.description);
           }
       );
     });
   }
 
   updatePage() {
-    if (this.currPage.name && this.currPage.description) {
+    if (this.currPage.name) {
       this.pageService.updatePage(this.currPage.pageId, this.currPage).subscribe(
-          (page: Page) => {
-            this.currPage = page;
-            this.router.navigate(['/profile/' + this.user.uid + '/website/' + this.website.websiteId + '/page']);
+          (page: any) => {
+            this.router.navigate(['/profile/website/' + this.website.websiteId + '/page']);
           }
       );
     } else {
-      alert('Please enter page name and title!');
+        this.errorFlag = true;
+        this.errorMsg = 'Please enter page name!';
     }
   }
 
   deletePage() {
     this.pageService.deletePage(this.currPage.pageId).subscribe(
         (data: any) => {
-            this.router.navigate(['/profile/' + this.user.uid + '/website/' + this.website.websiteId + '/page']);
+            this.router.navigate(['/profile/website/' + this.website.websiteId + '/page']);
         }
     );
   }
