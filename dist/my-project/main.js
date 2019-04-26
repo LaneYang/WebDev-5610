@@ -904,7 +904,7 @@ module.exports = "main {\n    margin: 0 auto;\n    text-align: center;\n}\n\n/*#
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<main>\n    <a routerLink=\"/login\">Assignment </a>\n</main>\n\n"
+module.exports = "<main>\n    <a routerLink=\"/login\">Assignment link </a>\n</main>\n\n"
 
 /***/ }),
 
